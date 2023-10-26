@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { auth } from "../firebase";
+import { FirebaseError } from "firebase/app";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -23,6 +24,7 @@ const Title = styled.h1`
 
 const Form = styled.form`
   margin-top: 50px;
+  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -43,6 +45,11 @@ const Input = styled.input`
       opacity: 0.8;
     }
   }
+`;
+
+const Error = styled.h3`
+  margin-top: 20px;
+  color: red;
 `;
 
 export default function CreateAccount() {
@@ -66,6 +73,7 @@ export default function CreateAccount() {
   };
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
     if (isLoading || name === "" || email === "" || password === "") return;
     try {
       setLoading(true);
@@ -80,7 +88,9 @@ export default function CreateAccount() {
       });
       navigate("/");
     } catch (e) {
-      // setError
+      if (e instanceof FirebaseError) {
+        setError(e.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -115,6 +125,7 @@ export default function CreateAccount() {
         />
         <Input type="submit" value="Create Account" />
       </Form>
+      {error !== "" ? <Error>{error}</Error> : null}
     </Wrapper>
   );
 }
