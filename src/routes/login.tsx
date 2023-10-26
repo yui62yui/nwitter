@@ -64,7 +64,7 @@ export default function Login() {
           type="password"
           required
         />
-        <Input type="submit" value="Log in" />
+        <Input className="submit-button" type="submit" value="Log in" />
       </Form>
       {error !== "" ? <Error>{error}</Error> : null}
       <Switcher>
